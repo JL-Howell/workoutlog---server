@@ -1,9 +1,10 @@
-module.exports = function (sequelize, DataTypes) {
-    const Log = sequelize.define('log', {
+const {DataTypes} = require('sequelize');
+const db = require('../db');
+
+    const Log = db.define('log', {
         description: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+            allowNull: false
         },
         definition: {
             type: DataTypes.STRING,
@@ -14,8 +15,10 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false
         },
         owner: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
-    })
-    return Log;
-};
+})
+
+module.exports = Log;
+

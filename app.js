@@ -1,21 +1,24 @@
-require("dotenv").config();
-let express = require('express');
-let app = express();
-let sequelize = require('./db');
+require('dotenv').config();
+const express = require('express');
+const db = require("./db");
+const app = express();
 
-let log = require('./Controller/logcontroller');
-let user = require('./Controller/usercontroller');
-
-sequelize.sync()
 app.use(require('./middleware/headers'));
+
+const controllers = require('./controller');
 
 app.use(express.json());
 
-app.use('/user', user);
+app.use("/user", controllers.usercontroller);
 
-app.use('/log', log);
+app.use("/log", controllers.logcontroller);
 
-app.listen(3000, function() {
-    console.log('App is listening on port 3000')
-});
-
+db.authenticate()
+.then(() => db.sync()) // => {force: true}
+.then(() => {
+    app.listen(process.env.PORT, () => console.log(`[Server: ] App is listening on Port ${process.env.PORT}`));
+})
+.catch((err) => {
+    console.log("[Sever: ] Server Crashed");
+    console.error(err);
+})

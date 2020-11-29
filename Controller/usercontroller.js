@@ -1,13 +1,12 @@
 const router = require('express').Router();
-const User = require('../db').import('../models/user');
-const jwt = require("jsonwebtoken");
-
-const bcrypt = require('bcryptjs')
+const { User } = require('../models');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 //USER SIGNUP
 router.post('/register', (req, res) => {
     User.create({
-        email: req.body.user.email,
+        username: req.body.user.email,
         password: bcrypt.hashSync(req.body.user.password, 13)
     })
     .then(
@@ -29,7 +28,7 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => {
     User.findOne({
         where: {
-            email: req.body.user.email
+            username: req.body.user.username
         }
     })
     .then(function loginSuccess(user) {
@@ -39,15 +38,15 @@ router.post('/login', (req, res) => {
                     let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24})
                     res.status(200).json({
                         user: user, 
-                        message: 'User succesfully logged in!',
+                        message: 'Yo, you got it...SUCCESSFUL!',
                         sessionToken: token
                     })
                 } else {
-                    res.status(502).send({ error: 'Login Failed' })
+                    res.status(502).send({ error: 'failed!' })
                 }
             });
         } else {
-            res.status(500).json({ error: 'User does not exist.' })
+            res.status(500).json({ error: "Hey! You don't exist!"})
         }
     })
     .catch(err => res.status(500).json({ error: err }))
